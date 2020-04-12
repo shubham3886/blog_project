@@ -27,23 +27,38 @@ class _CreateBlogState extends State<CreateBlog> {
   }
 
   uploadBlog() async {
-    if(selectedImage != null){
+    debugPrint("SELECTED CALLED NULL");
 
+    if (selectedImage != null) {
+      debugPrint("SELECTED NOT NULL");
       setState(() {
         _isLoading = true;
       });
+
       /// uploading image to firebase storage
-      StorageReference firebaseStorageRef = FirebaseStorage.instance.
-      ref().
-      child("blogImages").
-      child("${randomAlphaNumeric(9)}.jpg");
+      StorageReference firebaseStorageRef = FirebaseStorage.instance
+          .ref()
+          .child("blogImages")
+          .child("${randomAlphaNumeric(9)}.jpg");
 
       final StorageUploadTask task = firebaseStorageRef.putFile(selectedImage);
 
       var downloadUrl = await (await task.onComplete).ref.getDownloadURL();
       print("this is  url $downloadUrl");
 
-    }else{}
+      Map<String, String> blogMap = {
+        "imgUrl": downloadUrl,
+        "authorName": authorName,
+        "title": title,
+        "desc": desc
+      };
+
+      crudMethod.addData(blogMap).then((result) {
+        Navigator.pop(context);
+      });
+    } else {
+      debugPrint("SELECTED  NULL");
+    }
   }
 
   @override
@@ -67,86 +82,85 @@ class _CreateBlogState extends State<CreateBlog> {
         elevation: 0.0,
         actions: <Widget>[
           GestureDetector(
-            onTap: () {
-              uploadBlog();
-            },
-
-          child: Container(
-              padding: EdgeInsets.symmetric(horizontal: 16),
-              child: Icon(Icons.file_upload))
-          )
+              onTap: () {
+                uploadBlog();
+              },
+              child: Container(
+                  padding: EdgeInsets.symmetric(horizontal: 16),
+                  child: Icon(Icons.file_upload)))
         ],
       ),
-      body: _isLoading ? Container(
-        alignment: Alignment.center,
-        child: CircularProgressIndicator(),
-      )
+      body: _isLoading
+          ? Container(
+              alignment: Alignment.center,
+              child: CircularProgressIndicator(),
+            )
           : Container(
-        child: Column(
-          children: <Widget>[
-            SizedBox(
-              height: 10,
-            ),
-            GestureDetector(
-                onTap: () {
-                  getImage();
-                },
-                child: selectedImage != null
-                    ? Container(
-                        margin: EdgeInsets.symmetric(horizontal: 16),
-                        height: 150,
-                        width: MediaQuery.of(context).size.width,
-                        child: ClipRRect(
-                            borderRadius: BorderRadius.circular(6),
-                          child: Image.file(
-                            selectedImage,
-                            fit: BoxFit.cover,
-                          ),
-                        ),
-                      )
-                    : Container(
-                        margin: EdgeInsets.symmetric(horizontal: 16),
-                        height: 150,
-                        decoration: BoxDecoration(
-                            color: Colors.white,
-                            borderRadius: BorderRadius.circular(6)),
-                        width: MediaQuery.of(context).size.width,
-                        child: Icon(
-                          Icons.add_a_photo,
-                          color: Colors.black45,
-                        ),
-                      )),
-            SizedBox(
-              height: 8,
-            ),
-            Container(
-              margin: EdgeInsets.symmetric(horizontal: 16),
               child: Column(
                 children: <Widget>[
-                  TextField(
-                    decoration: InputDecoration(hintText: "Author Name"),
-                    onChanged: (val) {
-                      authorName = val;
-                    },
+                  SizedBox(
+                    height: 10,
                   ),
-                  TextField(
-                    decoration: InputDecoration(hintText: "Title"),
-                    onChanged: (val) {
-                      title = val;
-                    },
+                  GestureDetector(
+                      onTap: () {
+                        getImage();
+                      },
+                      child: selectedImage != null
+                          ? Container(
+                              margin: EdgeInsets.symmetric(horizontal: 16),
+                              height: 170,
+                              width: MediaQuery.of(context).size.width,
+                              child: ClipRRect(
+                                borderRadius: BorderRadius.circular(6),
+                                child: Image.file(
+                                  selectedImage,
+                                  fit: BoxFit.cover,
+                                ),
+                              ),
+                            )
+                          : Container(
+                              margin: EdgeInsets.symmetric(horizontal: 16),
+                              height: 170,
+                              decoration: BoxDecoration(
+                                  color: Colors.white,
+                                  borderRadius: BorderRadius.circular(6)),
+                              width: MediaQuery.of(context).size.width,
+                              child: Icon(
+                                Icons.add_a_photo,
+                                color: Colors.black45,
+                              ),
+                            )),
+                  SizedBox(
+                    height: 8,
                   ),
-                  TextField(
-                    decoration: InputDecoration(hintText: "Desc"),
-                    onChanged: (val) {
-                      desc = val;
-                    },
+                  Container(
+                    margin: EdgeInsets.symmetric(horizontal: 16),
+                    child: Column(
+                      children: <Widget>[
+                        TextField(
+                          decoration: InputDecoration(hintText: "Author Name"),
+                          onChanged: (val) {
+                            authorName = val;
+                          },
+                        ),
+                        TextField(
+                          decoration: InputDecoration(hintText: "Title"),
+                          onChanged: (val) {
+                            title = val;
+                          },
+                        ),
+                        TextField(
+                          decoration: InputDecoration(hintText: "Desc"),
+                          onChanged: (val) {
+                            desc = val;
+                          },
+                        )
+                      ],
+                    ),
                   )
                 ],
               ),
-            )
-          ],
-        ),
-      ),
+            ),
     );
   }
 }
