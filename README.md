@@ -1,16 +1,13 @@
-# blog_project
+# Blog_Line
 
-A new Flutter project.
+Currently there is app which is specifically about blog so this app will be used efficiently and uniquely to upload the blog about any thinking. 
 
-## Getting Started
+## Language and Framework
 
-This project is a starting point for a Flutter application.
+* Dart
+* Flutter
 
-A few resources to get you started if this is your first Flutter project:
-
-- [Lab: Write your first Flutter app](https://flutter.dev/docs/get-started/codelab)
-- [Cookbook: Useful Flutter samples](https://flutter.dev/docs/cookbook)
-
-For help getting started with Flutter, view our
-[online documentation](https://flutter.dev/docs), which offers tutorials,
-samples, guidance on mobile development, and a full API reference.
+## Dir Structure
+* flutter
+* Firebase
+* Dart
